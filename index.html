@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Task Manager | Gerenciador de Tarefas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📋 Task Manager</h1>
+            <button class="btn-clear" id="clearALL">Limpar Tudo</button>
+        </header>
+
+        <div class="add-task-section">
+            <input
+                type="text"
+                id="taskInput"
+                placeholder="Digite uma nova tarefa..."
+                autocomplete="off"
+            >
+            <select id="taskPriority">
+                <option value="low">Baixa</option>
+                <option value="medium">Média</option>
+                <option value="high">Alta</option>
+            </select>
+            <button class="btn-add" id="addTask">Adicionar</button>
+        </div>
+
+        <div class="filters">
+            <button class="filter-btn active" data-filter="all">Todas</button>
+            <button class="filter-btn" data-filter="pending">Pendentes</button>
+            <button class="filter-btn" data-filter="completed">Concluídas</button>
+        </div>
+
+        <div class="stats-bar">
+            <span id="taskCount">0 tarefas</span>
+            <span id="completedCount">0 concluídas</span>
+        </div>
+
+        <ul class="task-list" id="taskList">
+            <!-- Tarefas serão adicionadas aqui via JavaScript -->
+        </ul>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
