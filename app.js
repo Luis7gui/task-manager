@@ -3,7 +3,6 @@ let tasks = JSON.parse(localStorage.getItem('tasks')) || [];
 console.log('Tarefas carregadas:', tasks); // Debug
 let currentFilter = 'all';
 
-
 // Elementos DOM
 const taskInput = document.getElementById('taskInput');
 const taskPriority = document.getElementById('taskPriority');
@@ -119,8 +118,63 @@ function renderTasks() {
             </div>
         </li>
     `).join('');
+
+    initDragAndDrop();
 }
 
+//Drag and Drop 
+function initDragAndDrop() {
+    const taskItems = document.querySelectorAll('.task-item');
+    let draggedItem = null;
+
+    taskItems.forEach(item => {
+        item.setAttribute('draggable', true);
+        
+        item.addEventListener('dragstart', function(e) {
+            draggedItem = this;
+            e.dataTransfer.setData('text/plain', ''); // Necessário para Firefox
+            requestAnimationFrame(() => {
+                this.classList.add('dragging');
+            });
+        });
+
+        item.addEventListener('dragend', function() {
+            this.classList.remove('dragging');
+            draggedItem = null;
+        });
+
+        item.addEventListener('dragover', function(e) {
+            e.preventDefault();
+        });
+
+        item.addEventListener('drop', function(e) {
+            e.preventDefault();
+            if (this === draggedItem) return;
+
+            // Encontra os índices no array tasks
+            const allItems = Array.from(taskList.children);
+            const fromIndex = tasks.findIndex(t => t.id === parseInt(draggedItem.dataset.id));
+            const toIndex = tasks.findIndex(t => t.id === parseInt(this.dataset.id));
+
+            if (fromIndex !== -1 && toIndex !== -1) {
+                // Move o item no array tasks
+                const [movedItem] = tasks.splice(fromIndex, 1);
+                tasks.splice(toIndex, 0, movedItem);
+                
+                // Atualiza o DOM
+                if (fromIndex < toIndex) {
+                    this.parentNode.insertBefore(draggedItem, this.nextSibling);
+                } else {
+                    this.parentNode.insertBefore(draggedItem, this);
+                }
+
+                // Salva a nova ordem
+                saveTasks();
+            }
+        });
+    });
+}
+    
 // Adicionar nova tarefa
 function addTask() {
     const text = taskInput.value.trim();
@@ -197,17 +251,3 @@ document.addEventListener('DOMContentLoaded', () => {
     renderTasks();
     updateStats();
 });
-
-// Filtros
-filterBtns.forEach(btn => {
-    btn.addEventListener('click', () => {
-        filterBtns.forEach(b => b.classList.remove('active'));
-        btn.classList.add('active');
-        currentFilter = btn.getAttribute('data-filter');
-        renderTasks();
-    });
-});
-
-// Inicialização
-renderTasks();
-updateStats();

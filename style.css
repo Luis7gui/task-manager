@@ -214,3 +214,17 @@ header h1 {
     text-align: center;
     color: var(--gray);
 }
+
+.task-item {
+    cursor: move;
+    user-select: none;
+}
+
+.task-item.dragging {
+    opacity: 0.5;
+    background: var(--light-gray);
+}
+
+.task-item.drag-over {
+    border-top: 3px solid var(--primary);
+}
